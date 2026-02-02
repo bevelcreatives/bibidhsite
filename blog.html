@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insights | Bevel Creatives</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="plasma-bg"></div>
+  <canvas id="hex-canvas"></canvas>
+  <div class="noise-overlay"></div>
+
+  <header class="navbar glass">
+    <div class="logo">
+      <img src="BevelCreatives_transparent.png" alt="Bevel Logo" class="header-logo">
+      Bevel<span>Creatives</span>
+    </div>
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="blog.html" class="active">Blogs</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="blog-container">
+    <header class="blog-header">
+      <h1>Industry <span>Insights</span></h1>
+      <p>Game development news, recovery strategies, and technical deep-dives.</p>
+    </header>
+
+    <div class="blog-grid">
+      <article class="glass blog-card">
+  <div class="blog-image" style="background-image: url('retention.png');"></div>
+  <div class="blog-content">
+    <span class="blog-category">Optimization</span>
+    <h3>Optimizing Mobile Performance for Unreal Engine 5</h3>
+    <p>Practical tips for maintaining 60FPS on mid-range mobile devices without sacrificing visual fidelity...</p>
+    <a href="mobile-optimization-guide.html" class="read-more">Read Article →</a>
+  </div>
+</article>
+
+      <article class="glass blog-card">
+        <div class="blog-image" style="background-image: url('monetization.png');"></div>
+        <div class="blog-content">
+          <span class="blog-category">Monetization</span>
+          <h3>The State of Roblox Monetization in 2025</h3>
+          <p>A deep dive into new marketplace trends and how developers are adjusting their revenue loops...</p>
+          <a href="roblox-monetization-2025.html" class="read-more">Read Article →</a>
+      </article>
+
+      <article class="glass blog-card">
+        <div class="blog-image" style="background-image: url('retention.png');"></div>
+        <div class="blog-content">
+          <span class="blog-category">Retention</span>
+          <h3>Identify Churn Points in Your First 5 Minutes</h3>
+          <p>Practical tips for maintaining 60FPS on mid-range mobile devices without sacrificing visual fidelity...</p>
+          <a href="article.html" class="read-more">Read Article →</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer class="footer-bottom">
+    © 2025 Bevel Creatives Pvt. Ltd. All rights reserved.
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('hex-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, rows, cols;
+    const hexRadius = 30;
+    const mouse = { x: -1000, y: -1000 };
+
+    function init() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      cols = Math.ceil(width / (hexRadius * 1.5)) + 1;
+      rows = Math.ceil(height / (hexRadius * Math.sqrt(3))) + 1;
+    }
+    window.addEventListener('resize', init);
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    function drawHexagon(x, y, radius, opacity) {
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 6; i++) {
+        ctx.lineTo(x + radius * Math.cos(i * Math.PI / 3), y + radius * Math.sin(i * Math.PI / 3));
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          let x = c * hexRadius * 1.5;
+          let y = r * hexRadius * Math.sqrt(3);
+          if (c % 2 === 1) y += (hexRadius * Math.sqrt(3)) / 2;
+          const dist = Math.hypot(x - mouse.x, y - mouse.y);
+          let opacity = 0.05;
+          if (dist < 150) opacity = 0.4 - (dist / 150) * 0.35;
+          drawHexagon(x, y, hexRadius, opacity);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    init(); animate();
+  </script>
+</body>
+</html>

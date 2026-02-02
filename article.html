@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Article Title | Bevel Creatives</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="plasma-bg"></div>
+  <canvas id="hex-canvas"></canvas>
+  <div class="noise-overlay"></div>
+
+  <header class="navbar glass">
+    <div class="logo">
+      <img src="BevelCreatives_transparent.png" alt="Bevel Logo" class="header-logo">
+      Bevel<span>Creatives</span>
+    </div>
+    <nav>
+      <a href="index.html#home">Home</a>
+      <a href="blog.html">Blogs</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="article-reader-container">
+    <div class="glass article-main-card">
+      <header class="article-header">
+        <span class="blog-category">Recovery Strategy</span>
+        <h1>How to Identify Churn Points in Your First 5 Minutes</h1>
+        <div class="article-meta">
+          <span>By <b>Bibidh Gautam</b></span> • <span>5 min read</span> • <span>Oct 24, 2025</span>
+        </div>
+      </header>
+
+      <div class="article-featured-img" style="background-image: url('analytics.webp');"></div>
+
+      <div class="article-body">
+        <p class="lead">Player retention isn't just about the endgame; it's about the first 300 seconds. If your onboarding fails, your game fails.</p>
+        
+        <h2>The "First Look" Fallacy</h2>
+        <p>Many developers assume players will push through a slow start to get to the "good parts." Data proves the opposite. We analyzed over 50 mobile titles and found that 60% of churn happens during the initial asset download or the first tutorial quest.</p>
+        
+        <div class="article-quote">
+          "Your downfall begins where your tutorial ends. If the player isn't hooked by then, they never will be."
+        </div>
+
+        <h2>3 Key Metrics to Track</h2>
+        <ul>
+          <li><strong>Input Latency:</strong> Are players dropping off because the UI feels unresponsive?</li>
+          <li><strong>Dopamine Pacing:</strong> Is there a reward within the first 60 seconds?</li>
+          <li><strong>Tutorial Clarity:</strong> Do players quit because they are confused about the core loop?</li>
+        </ul>
+
+        <p>At Bevel Creatives, we use live behavioral funnels to pin-point the exact second a player closes the app. Often, a simple change in camera angle or a 10% faster movement speed can boost Day-1 retention by double digits.</p>
+      </div>
+
+      <footer class="article-footer">
+        <a href="blog.html" class="back-link">← Back to Insights</a>
+      </header>
+    </div>
+  </main>
+
+  <footer class="footer-bottom">
+    © 2025 Bevel Creatives Pvt. Ltd. All rights reserved.
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('hex-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, rows, cols;
+    const hexRadius = 30;
+    const mouse = { x: -1000, y: -1000 };
+
+    function init() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      cols = Math.ceil(width / (hexRadius * 1.5)) + 1;
+      rows = Math.ceil(height / (hexRadius * Math.sqrt(3))) + 1;
+    }
+    window.addEventListener('resize', init);
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    function drawHexagon(x, y, radius, opacity) {
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 6; i++) {
+        ctx.lineTo(x + radius * Math.cos(i * Math.PI / 3), y + radius * Math.sin(i * Math.PI / 3));
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          let x = c * hexRadius * 1.5;
+          let y = r * hexRadius * Math.sqrt(3);
+          if (c % 2 === 1) y += (hexRadius * Math.sqrt(3)) / 2;
+          const dist = Math.hypot(x - mouse.x, y - mouse.y);
+          let opacity = 0.05;
+          if (dist < 150) opacity = 0.4 - (dist / 150) * 0.35;
+          drawHexagon(x, y, hexRadius, opacity);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    init(); animate();
+  </script>
+</body>
+</html>
