@@ -15,6 +15,20 @@ body {
   line-height: 1.6;
 }
 
+/* Hide scrollbar */
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+
 /* BACKGROUND LAYERS */
 .plasma-bg {
   position: fixed;
@@ -148,7 +162,7 @@ nav a:hover { color: cyan; }
   grid-template-columns: repeat(2, 1fr); 
   gap: 30px;
   max-width: 900px; 
-  margin: 0 auto;
+  margin: 1 auto;
 }
 .service-card {
   position: relative;
@@ -180,7 +194,7 @@ nav a:hover { color: cyan; }
 
 /* TEAM */
 .team-execs { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; }
-.team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+.team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 30px; }
 .team-card { overflow: hidden; text-align: center; }
 .team-card.featured { flex: 0 1 400px; }
 .member-image { width: 100%; aspect-ratio: 1/1; background: #1a1a1a; overflow: hidden; }
@@ -196,6 +210,17 @@ nav a:hover { color: cyan; }
   color: #bbb;
   line-height: 1.4;
   text-transform: none;
+}
+
+#team.section{
+  max-width: 1500px;
+}
+
+@media (max-width: 1200px){
+  .team-grid{ grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px){
+  .team-grid{ grid-template-columns: 1fr; }
 }
 
 .member-desc {
@@ -238,6 +263,32 @@ nav a:hover { color: cyan; }
 .win-card { padding: 50px 30px; }
 .win-card h3 { font-size: 2.5rem; color: cyan; margin-bottom: 15px; }
 .client { display: block; margin-top: 25px; font-size: 0.9rem; color: #777; font-style: italic; }
+
+/* Mini results pills under the main wins cards */
+.wins-mini-grid{
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.mini-win{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  color: #d6d6d6;
+  font-size: 1rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mini-ico{
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
 
 /* CONTACT */
 .email { font-size: 2rem; font-weight: 700; margin-top: 20px; color: cyan; }
@@ -606,3 +657,121 @@ nav a:hover { color: cyan; }
 }
 
 .back-link:hover { opacity: 0.7; }
+
+/* ================================
+   CYAN SECTION HEADERS – FLOATING NEON
+   ================================ */
+
+#contact h2,
+#wins h2,
+#team h2,
+#services h2,
+#about h2 {
+  color: cyan;
+
+  /* Centering */
+  display: inline-block;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+
+  /* Neon glow */
+  text-shadow:
+    0 0 6px rgba(0, 255, 255, 0.35),
+    0 0 16px rgba(0, 255, 255, 0.28),
+    0 0 32px rgba(0, 255, 255, 0.18);
+
+  /* Depth & bloom */
+  filter: drop-shadow(0 14px 26px rgba(0, 255, 255, 0.18));
+  transform: translateZ(0);
+  will-change: transform, text-shadow, filter;
+
+  /* Pulsating animation */
+  animation: headerPulse 2.8s ease-in-out infinite;
+}
+
+/* Glow plate behind text (depth illusion) */
+#contact h2::before,
+#wins h2::before,
+#team h2::before,
+#services h2::before,
+#about h2::before {
+  content: "";
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  top: 55%;
+  height: 0.9em;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 255, 255, 0.25) 0%,
+    rgba(0, 255, 255, 0.12) 45%,
+    rgba(0, 255, 255, 0.0) 70%
+  );
+  filter: blur(14px);
+  opacity: 0.55;
+  z-index: -1;
+  border-radius: 999px;
+}
+
+/* Hover = stronger lift */
+#contact h2:hover,
+#wins h2:hover,
+#team h2:hover,
+#services h2:hover,
+#about h2:hover {
+  transform: translateY(-6px) scale(1.04);
+  text-shadow:
+    0 0 10px rgba(0, 255, 255, 0.6),
+    0 0 28px rgba(0, 255, 255, 0.45),
+    0 0 60px rgba(0, 255, 255, 0.3);
+  filter: drop-shadow(0 22px 40px rgba(0, 255, 255, 0.28));
+  transition: all 260ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* Pulsating neon animation */
+@keyframes headerPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 6px rgba(0,255,255,0.32),
+      0 0 16px rgba(0,255,255,0.24),
+      0 0 28px rgba(0,255,255,0.16);
+    filter: drop-shadow(0 14px 26px rgba(0,255,255,0.16));
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    text-shadow:
+      0 0 12px rgba(0,255,255,0.6),
+      0 0 30px rgba(0,255,255,0.45),
+      0 0 64px rgba(0,255,255,0.3);
+    filter: drop-shadow(0 24px 44px rgba(0,255,255,0.32));
+    transform: translateY(-3px) scale(1.02);
+  }
+}
+
+/* Staggered pulse (organic feel) */
+#about h2    { animation-delay: 0s; }
+#services h2 { animation-delay: .4s; }
+#team h2     { animation-delay: .8s; }
+#wins h2     { animation-delay: 1.2s; }
+#contact h2  { animation-delay: 1.6s; }
+
+/* Respect reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  #contact h2,
+  #wins h2,
+  #team h2,
+  #services h2,
+  #about h2 {
+    animation: none;
+  }
+}
+/* Ensure section headers are truly centered in their sections */
+#contact,
+#wins,
+#team,
+#services,
+#about {
+  text-align: center;
+}
