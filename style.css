@@ -264,6 +264,14 @@ nav a:hover { color: cyan; }
 .win-card h3 { font-size: 2.5rem; color: cyan; margin-bottom: 15px; }
 .client { display: block; margin-top: 25px; font-size: 0.9rem; color: #777; font-style: italic; }
 
+.wins-grid .win-card:nth-child(1) h3 {
+  color: #ff3b3b;
+}
+
+.wins-grid .win-card:nth-child(2) h3 {
+  color: #00ff88;
+}
+
 /* Mini results pills under the main wins cards */
 .wins-mini-grid{
   display: flex;
