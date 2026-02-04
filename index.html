@@ -15,14 +15,12 @@ function sendEmail(e) {
   e.preventDefault();
 
   const name = document.querySelector('.contact-form input[placeholder="Enter your name"]').value;
-  const email = document.querySelector('.contact-form input[type="email"]').value;
   const game = document.querySelector('.contact-form input[placeholder="Game title"]').value;
   const message = document.querySelector('.contact-form textarea').value;
 
   const subject = `Game Inquiry: ${game}`;
   const body =
 `Name: ${name}
-Email: ${email}
 Game Name: ${game}
 
 Message:
@@ -72,8 +70,7 @@ ${message}`;
     <div class="logo">
       <img src="BevelCreatives_transparent.png" alt="Bevel Creatives Logo" class="header-logo">
       Bevel<span>Creatives</span>
-    </div>
-<nav>
+    </div><nav>
   <a href="index.html#home">Home</a>
   <a href="index.html#about">About</a>
   <a href="index.html#services">Services</a>
@@ -82,11 +79,27 @@ ${message}`;
     <a href="blog.html">Blogs</a> 
   <a href="index.html#contact">Contact</a>
 </nav>
+    <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div id="mobile-menu" class="mobile-menu glass" hidden>
+      <a href="index.html#home">Home</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#team">Team</a>
+      <a href="index.html#wins">Results</a>
+      <a href="blog.html">Blogs</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+
   </header>
 
   <section id="home" class="hero">
     <div class="hero-content">
-      <text style="font-size: 100px;"><b>YOUR GAME DIES.</b></text><br>
+    <text style="font-size: 100px;">
+      <b>YOUR GAME <span class="dies-word">DIES.</span></b>
+    </text>
       <h1 class="revive-text"><span>WE REVIVE THEM.</span></h1>
       <p>
         Your downfall begins, our work begins.<br> 
@@ -146,6 +159,29 @@ ${message}`;
       </div>
     </div>
   </section>
+
+<div class="h-marquee" aria-hidden="true">
+  <div class="h-marquee-track">
+    <div class="h-marquee-group">
+      <span>🎮 GAME DESIGN</span>
+      <span>👁️ RETENTION</span>
+      <span>💵 MONETIZATION</span>
+      <span>💻 UI / UX</span>
+      <span>⚔️ PROGRESSION</span>
+      <span>📈 ANALYTICS</span>
+      <span>➕ LIVE OPS</span>
+    </div>
+    <div class="h-marquee-group" aria-hidden="true">
+      <span>🎮 GAME DESIGN</span>
+      <span>👁️ RETENTION</span>
+      <span>💵 MONETIZATION</span>
+      <span>💻 UI / UX</span>
+      <span>⚔️ PROGRESSION</span>
+      <span>📈 ANALYTICS</span>
+      <span>➕ LIVE OPS</span>
+    </div>
+  </div>
+</div>
 
   <section id="team" class="section">
   <h2 style="text-align: center;">Meet Our Team</h2>
@@ -297,11 +333,8 @@ ${message}`;
   <div class="contact-grid">
     <!-- FORM -->
 <form class="glass contact-form" onsubmit="sendEmail(event)">
-      <label>Your Name</label>
+      <label>Your Name/Alias</label>
       <input type="text" placeholder="Enter your name">
-
-      <label>Email Address</label>
-      <input type="email" placeholder="Enter your email">
 
       <label>Your Game Name</label>
       <input type="text" placeholder="Game title">
@@ -310,25 +343,24 @@ ${message}`;
       <textarea rows="5" placeholder="Briefly describe your game..."></textarea>
 
       <button type="submit">Send Message ✈</button>
-    </form>
+  </form>
 
-    <!-- INFO -->
-    <div class="contact-info">
-      <div class="glass info-card">
-        <h4>Email</h4>
-        <p>bevelcreatives@gmail.com</p>
-      </div>
+  <!-- CONTACT ICONS (below form) -->
+<div class="contact-actions" aria-label="Contact links">
+  <a class="contact-icon-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=bevelcreatives@gmail.com"
+     target="_blank" rel="noopener" aria-label="Gmail">
+    <img src="Gmail.png" alt="Gmail">
+  </a>
 
-      <div class="glass info-card">
-        <h4>Discord</h4>
-        <p>@BeveledEdge</p>
-      </div>
+  <a class="contact-icon-btn" href="https://discord.gg/36C7PUQXyv"
+     target="_blank" rel="noopener" aria-label="Discord">
+    <img src="Discord.png" alt="Discord">
+  </a>
 
-      <div class="glass info-card">
-        <h4>LinkedIn</h4>
-        <p>https://www.linkedin.com/in/bibidh/</p>
-      </div>
-    </div>
+  <a class="contact-icon-btn" href="https://www.linkedin.com/company/bevelcreatives/"
+     target="_blank" rel="noopener" aria-label="LinkedIn">
+    <img src="linkedin.png" alt="LinkedIn">
+  </a>
   </div>
 
   <div class="footer-bottom">© 2025 Bevel Creatives Pvt. Ltd. All rights reserved.</div>
@@ -411,7 +443,70 @@ ${message}`;
 
   init();
   animate();
+</script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.querySelector(".hamburger");
+  const menu = document.getElementById("mobile-menu");
+  const desktopNav = document.querySelector(".navbar nav");
+
+  if (!btn || !menu) return;
+
+  const closeMenu = () => {
+    btn.classList.remove("is-open");
+    btn.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+    document.body.classList.remove("menu-open");
+  };
+
+  const openMenu = () => {
+    btn.classList.add("is-open");
+    btn.setAttribute("aria-expanded", "true");
+    menu.hidden = false;
+    document.body.classList.add("menu-open");
+  };
+
+  const toggleMenu = () => {
+    const isOpen = btn.classList.contains("is-open");
+    if (isOpen) closeMenu();
+    else openMenu();
+  };
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close when clicking a link
+  menu.addEventListener("click", (e) => {
+    const a = e.target.closest("a");
+    if (a) closeMenu();
+  });
+
+  // Close on outside click
+  document.addEventListener("click", (e) => {
+    if (menu.hidden) return;
+    if (e.target.closest("#mobile-menu")) return;
+    if (e.target.closest(".hamburger")) return;
+    closeMenu();
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // Safety: if resized to desktop, close
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) closeMenu();
+  });
+
+  // If desktop nav is visible, ensure menu stays closed
+  if (desktopNav && window.getComputedStyle(desktopNav).display !== "none") {
+    closeMenu();
+  }
+});
 </script>
 </body>
 </html>
