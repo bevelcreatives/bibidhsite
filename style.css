@@ -1384,3 +1384,10 @@ body.menu-open{
   width: 40px;
   height: 40px;
 }
+
+@media (max-width: 768px){
+  .contact-icon-btn img{
+    width: 40px;
+    height: 40px;
+  }
+}
