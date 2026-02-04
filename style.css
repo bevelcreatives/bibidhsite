@@ -1391,3 +1391,36 @@ body.menu-open{
     height: 40px;
   }
 }
+
+/* =====================================================
+   RESTORE PREMIUM GLASS HOVER + GLOW EDGES
+   ===================================================== */
+
+/* Default hover glow for every glass panel */
+.glass:hover{
+  transform: translateY(-6px);
+  border-color: rgba(0, 255, 255, 0.32);
+  box-shadow:
+    0 24px 70px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(0, 255, 255, 0.16),
+    0 0 26px rgba(0, 255, 255, 0.18);
+}
+
+/* Focus glow for form panels */
+.glass:focus-within{
+  border-color: rgba(0, 255, 255, 0.35);
+  box-shadow:
+    0 24px 70px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(0, 255, 255, 0.18),
+    0 0 28px rgba(0, 255, 255, 0.22);
+}
+
+/* Keep navbar stable (don’t float up like cards) */
+.navbar.glass:hover{
+  transform: translateX(-50%) !important;
+}
+
+/* Optional: don’t “lift” tiny icon buttons */
+#contact .contact-icon-btn:hover{
+  transform: translateY(-2px); /* keep your existing behavior */
+}
