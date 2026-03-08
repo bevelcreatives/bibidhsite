@@ -148,26 +148,15 @@ if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
 
-// 2. BACKGROUND MUSIC (YT API)
-var tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-var player;
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '0',
-    width: '0',
-    videoId: 'KuBCTi6NnNM',
-    playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'KuBCTi6NnNM' },
-    events: {
-      'onReady': (event) => {
-        // Play on first interaction to bypass browser blocks
-        document.body.addEventListener('click', () => {
-          event.target.playVideo();
-        }, { once: true });
+// 2. BACKGROUND MUSIC (Local MP3)
+window.addEventListener('load', () => {
+  const audio = document.getElementById('bgm-audio');
+  if (audio) {
+    // Play on first user interaction to bypass browser autoplay restrictions
+    document.body.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().catch(e => console.log('Audio play failed:', e));
       }
-    }
-  });
-}
+    }, { once: true });
+  }
+});
