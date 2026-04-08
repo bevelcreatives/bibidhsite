@@ -1,500 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bevel Creatives</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="../images/BevelCreatives_transparent.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="../images/BevelCreatives_transparent.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="../images/BevelCreatives_transparent.png">
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bevel Creatives — Game Revival Studio</title>
+<link rel="icon" type="image/png" href="images/BevelCreatives_transparent.png">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="style.css"/>
 </head>
+<body>
 
-<script>
-function sendEmail(e) {
-  e.preventDefault();
-
-  const name = document.querySelector('.contact-form input[placeholder="Enter your name"]').value;
-  const game = document.querySelector('.contact-form input[placeholder="Game title"]').value;
-  const message = document.querySelector('.contact-form textarea').value;
-
-  const subject = `Game Inquiry: ${game}`;
-  const body =
-`Name: ${name}
-Game Name: ${game}
-
-Message:
-${message}`;
-
-  const gmailURL =
-    "https://mail.google.com/mail/?view=cm&fs=1" +
-    "&to=" + encodeURIComponent("bevelcreatives@gmail.com") +
-    "&su=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(body);
-
-  window.open(gmailURL, "_blank");
-}
-</script>
-
-<body class="loading">
-
-<div id="loader">
-  <div class="loader-content">
-    <div class="loader-logo-container">
-      <div class="logo-ring"></div>
-      <img src="../images/BevelCreatives_transparent.png" alt="Bevel Logo" class="loader-logo-img">
-    </div>
-
-    <div id="load-animation">
-      <div>S</div><div>E</div><div>V</div><div>I</div><div>T</div><div>A</div><div>E</div><div>R</div><div>C</div>
-      <div style="opacity: 0;"> </div> 
-      <div>L</div><div>E</div><div>V</div><div>E</div><div>B</div>
-    </div>
-  </div>
-</div>
-
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
-  <defs>
-    <filter id="goo">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
-      <feBlend in="SourceGraphic" in2="goo" />
-    </filter>
-  </defs>
+<!-- CUSTOM CURSOR SVG -->
+<svg id="sci-cursor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="2,2 2,16 6,12 9,18 11,17 8,11 14,11" fill="#00f5ff" opacity="0.95"/>
+  <polygon points="2,2 2,16 6,12 9,18 11,17 8,11 14,11" fill="none" stroke="#020c14" stroke-width="0.5"/>
 </svg>
 
-  <div class="plasma-bg"></div>
-  <canvas id="hex-canvas"></canvas> <div class="noise-overlay"></div>
+<!-- HEX BACKGROUND CANVAS -->
+<canvas id="hex-bg"></canvas>
 
-  <header class="navbar glass">
-    <div class="logo">
-      <img src="../images/BevelCreatives_transparent.png" alt="Bevel Creatives Logo" class="header-logo">
-      Bevel<span>Creatives</span>
-    </div><nav>
-  <a href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#services">Services</a>
-  <a href="#team">Team</a> 
-  <a href="#wins">Results</a>
-  <a href="Blogs">Blogs</a> 
-  <a href="#contact">Contact</a>
-</nav>
-    <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
-      <span></span><span></span><span></span>
-    </button>
+<!-- FLASH -->
+<div id="flash"></div>
 
-    <div id="mobile-menu" class="mobile-menu glass" hidden>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#team">Team</a>
-      <a href="#wins">Results</a>
-      <a href="Blogs">Blogs</a>
-      <a href="#contact">Contact</a>
+<!-- ══════════════════════════════════════
+     LOADING SCREEN
+══════════════════════════════════════ -->
+<div id="loader">
+  <div class="ld-frame">
+    <div class="ld-corner tl"><svg viewBox="0 0 90 90" fill="none"><polyline points="0,90 0,0 90,0" stroke="#00f5ff" stroke-width="3" opacity="0.9"/><line x1="0" y1="60" x2="0" y2="70" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><line x1="60" y1="0" x2="70" y2="0" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><rect x="0" y="0" width="6" height="6" fill="#00f5ff"/><line x1="18" y1="0" x2="30" y2="0" stroke="#00f5ff" stroke-width="1" opacity="0.4"/><line x1="0" y1="18" x2="0" y2="30" stroke="#00f5ff" stroke-width="1" opacity="0.4"/></svg></div>
+    <div class="ld-corner tr"><svg viewBox="0 0 90 90" fill="none"><polyline points="0,90 0,0 90,0" stroke="#00f5ff" stroke-width="3" opacity="0.9"/><line x1="0" y1="60" x2="0" y2="70" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><line x1="60" y1="0" x2="70" y2="0" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><rect x="0" y="0" width="6" height="6" fill="#00f5ff"/></svg></div>
+    <div class="ld-corner bl"><svg viewBox="0 0 90 90" fill="none"><polyline points="0,90 0,0 90,0" stroke="#00f5ff" stroke-width="3" opacity="0.9"/><line x1="0" y1="60" x2="0" y2="70" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><line x1="60" y1="0" x2="70" y2="0" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><rect x="0" y="0" width="6" height="6" fill="#00f5ff"/></svg></div>
+    <div class="ld-corner br"><svg viewBox="0 0 90 90" fill="none"><polyline points="0,90 0,0 90,0" stroke="#00f5ff" stroke-width="3" opacity="0.9"/><line x1="0" y1="60" x2="0" y2="70" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><line x1="60" y1="0" x2="70" y2="0" stroke="#00f5ff" stroke-width="6" opacity="0.7"/><rect x="0" y="0" width="6" height="6" fill="#00f5ff"/></svg></div>
+    <div class="ld-bar top"><div class="ld-tick"></div><div class="ld-bar-short"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-line"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-short"></div><div class="ld-tick"></div></div>
+    <div class="ld-bar bot"><div class="ld-tick"></div><div class="ld-bar-short"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-line"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-dot"></div><div class="ld-bar-short"></div><div class="ld-tick"></div></div>
+    <div class="ld-side l"></div><div class="ld-side r"></div><div class="ld-side t"></div><div class="ld-side b"></div>
+    <div class="ld-corner-txt bl">SYS: BEVEL-OS v2.4 &nbsp;|&nbsp; STUDIO: ACTIVE</div>
+    <div class="ld-corner-txt tr" id="ld-time">2025.01.01 — 00:00:00</div>
+  </div>
+  <div class="ld-glow"></div>
+  <div class="ld-center">
+    <div class="ld-logo-wrap">
+      <div class="ld-ring"></div><div class="ld-ring2"></div>
+      <img src="images/BevelCreatives_transparent.png" alt="Logo" class="ld-logo-img" onerror="this.style.display='none'">
+    </div>
+    <div class="ld-logo-txt">BEVEL CREATIVES</div>
+    <div class="ld-logo-sub">// GAME REVIVAL STUDIO //</div>
+    <div class="ld-progress-wrap">
+      <div class="ld-pct" id="ld-pct">0%</div>
+      <div class="ld-bar-outer" id="ld-bar-outer"></div>
+    </div>
+    <div class="ld-status" id="ld-status">INITIALIZING SYSTEMS</div>
+    <button class="ld-play" id="play-btn">&#9654;&nbsp; ENTER</button>
+    <div class="ld-press" id="ld-press">PRESS START TO REVIVE GAMES</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     GAME SCREEN
+══════════════════════════════════════ -->
+<div id="game-screen">
+  <svg id="hud-frame" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <!-- TOP BAR — centered brand on desktop; brand + hamburger on mobile -->
+  <div class="top-bar">
+    <div class="bar-logo">
+      <span class="bar-logo-text">BEVEL</span>
+      <img src="images/BevelCreatives_transparent.png" alt="Logo" class="bar-logo-img" onerror="this.style.opacity='0'">
+      <span class="bar-logo-text">CREATIVES</span>
+    </div>
+    <div class="bar-right">
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+
+  <!-- MENU (slides from right, mobile only) -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#" data-popup="about">ABOUT</a>
+    <a href="#" data-popup="services">SERVICES</a>
+    <a href="#" data-popup="team">TEAM</a>
+    <a href="#" data-popup="results">RESULTS</a>
+    <a href="#" data-popup="blogs">BLOGS</a>
+    <a href="#" data-popup="contact">CONTACT</a>
+  </div>
+
+  <div class="game-main">
+
+    <!-- ── LEFT PANEL ── -->
+    <div class="left-panel">
+      <!-- MODULE 1: Gauge — 87% arc -->
+      <div class="hud-module hud-module-gauge">
+        <div class="mod-label">REVIVAL RATE</div>
+        <div class="mod-gauge">
+          <svg class="gauge-svg" viewBox="0 0 136 136" xmlns="http://www.w3.org/2000/svg">
+            <!-- decorative outer rings -->
+            <circle cx="68" cy="68" r="62" fill="none" stroke="rgba(0,245,255,0.10)" stroke-width="1"/>
+            <circle cx="68" cy="68" r="56" fill="none" stroke="rgba(0,245,255,0.14)" stroke-width="1"/>
+            <!-- arc background -->
+            <circle cx="68" cy="68" r="46" fill="none"
+              stroke="rgba(0,245,255,0.09)" stroke-width="9"
+              stroke-dasharray="200.6 88.4"
+              stroke-dashoffset="-44.2"
+              stroke-linecap="round"/>
+            <!-- arc fill: 87% of 200.6 = 174.5 -->
+            <circle cx="68" cy="68" r="46" fill="none"
+              stroke="#00f5ff" stroke-width="9"
+              stroke-dasharray="174.5 114.5"
+              stroke-dashoffset="-44.2"
+              stroke-linecap="round" opacity="0.92">
+              <animate attributeName="stroke-dasharray" values="0 289;174.5 114.5" dur="1.8s" fill="freeze"/>
+            </circle>
+            <!-- rotating inner ring -->
+            <circle cx="68" cy="68" r="33" fill="none" stroke="#39ff14" stroke-width="1.5"
+              stroke-dasharray="28 179" stroke-linecap="round" opacity="0.65">
+              <animateTransform attributeName="transform" type="rotate" from="0 68 68" to="360 68 68" dur="4s" repeatCount="indefinite"/>
+            </circle>
+            <!-- center text -->
+            <text x="68" y="63" text-anchor="middle" fill="#00f5ff" font-family="Orbitron,sans-serif" font-size="19" font-weight="900">87%</text>
+            <text x="68" y="78" text-anchor="middle" fill="rgba(0,245,255,0.55)" font-family="Share Tech Mono,monospace" font-size="7.5" letter-spacing="1">REVIVAL RATE</text>
+          </svg>
+          <div class="gauge-val">284</div>
+          <div class="gauge-sub">ACTIVE GAMES</div>
+        </div>
+      </div>
+
+      <!-- MODULE 2: Studio data -->
+      <div class="hud-module hud-module-data">
+        <div class="mod-label">STUDIO DATA</div>
+        <div class="mod-info">
+          <div style="position:absolute;bottom:6px;right:6px;width:8px;height:8px;border-bottom:1.5px solid rgba(0,245,255,0.4);border-right:1.5px solid rgba(0,245,255,0.4);"></div>
+          <div class="info-row"><span class="info-key">FOUNDED</span><span class="info-val">2024</span></div>
+          <div class="info-row"><span class="info-key">ORIGIN</span><span class="info-val">NEPAL</span></div>
+          <div class="info-row"><span class="info-key">GAMES</span><span class="info-val g">20+</span></div>
+          <div class="info-row"><span class="info-key">DEVS</span><span class="info-val g">35+</span></div>
+          <div class="info-row"><span class="info-key">REVENUE</span><span class="info-val o">$1M+</span></div>
+          <div class="info-row"><span class="info-key">MODEL</span><span class="info-val" style="font-size:9px;">NO UPFRONT</span></div>
+        </div>
+      </div>
+
+      <!-- MODULE 3: Alert -->
+      <div class="hud-module hud-module-alert">
+        <div class="mod-label">SYS STATUS</div>
+        <div class="mod-alert">
+          <div class="alert-icon">
+            <svg class="alert-tri" viewBox="0 0 28 28"><polygon points="14,3 26,25 2,25" fill="none" stroke="#00f5ff" stroke-width="1.5" opacity="0.8"/><text x="14" y="21" text-anchor="middle" fill="#00f5ff" font-size="12" font-family="Arial">!</text></svg>
+            <div><div class="alert-title">SYSTEM READY</div><div class="alert-sub">ALL MODULES ONLINE</div></div>
+          </div>
+          <div class="alert-stat"><span class="blink-dot"></span>REVIVAL ENGINE: ACTIVE</div>
+          <div class="alert-stat" style="margin-top:4px;"><span class="blink-dot" style="background:var(--green);animation-delay:.4s;"></span>ANALYTICS: RUNNING</div>
+        </div>
+      </div>
+
+      <!-- LEFT NAV BUTTONS -->
+      <div class="side-nav-btns">
+        <button class="snav" data-popup="about"><span class="ico">&#9656;</span>ABOUT US</button>
+        <button class="snav" data-popup="services"><span class="ico">&#9656;</span>SERVICES</button>
+        <button class="snav g" data-popup="team"><span class="ico">&#9656;</span>TEAM</button>
+      </div>
     </div>
 
-  </header>
+    <!-- ── CENTER ── -->
+    <div class="center-view">
+      <div class="center-hud">
+        <svg class="hud-ring-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <g><circle cx="200" cy="200" r="190" fill="none" stroke="rgba(0,245,255,0.13)" stroke-width="1" stroke-dasharray="8 6"/><animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="20s" repeatCount="indefinite"/></g>
+          <circle cx="200" cy="200" r="175" fill="none" stroke="rgba(0,245,255,0.08)" stroke-width="1"/>
+          <circle cx="200" cy="200" r="155" fill="none" stroke="rgba(0,245,255,0.10)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <polygon points="200,45 337,122 337,278 200,355 63,278 63,122" fill="none" stroke="rgba(0,245,255,0.06)" stroke-width="1"/>
+          <g stroke="rgba(0,245,255,0.35)" stroke-width="1"><line x1="200" y1="25" x2="200" y2="42"/><line x1="200" y1="358" x2="200" y2="375"/><line x1="25" y1="200" x2="42" y2="200"/><line x1="358" y1="200" x2="375" y2="200"/></g>
+          <circle cx="200" cy="200" r="120" fill="none" stroke="rgba(0,245,255,0.07)" stroke-width="1"/>
+          <circle cx="200" cy="200" r="90" fill="none" stroke="rgba(57,255,20,0.05)" stroke-width="1.5"/>
+          <g><line x1="200" y1="200" x2="200" y2="32" stroke="rgba(57,255,20,0.45)" stroke-width="1.5" stroke-linecap="round"/><path d="M200,200 L200,32 A168,168 0 0,1 233,36 Z" fill="rgba(57,255,20,0.03)"/><animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="5s" repeatCount="indefinite"/></g>
+          <g stroke="rgba(0,245,255,0.45)" stroke-width="2" fill="none"><polyline points="60,60 60,80 80,80"/><polyline points="340,60 340,80 320,80"/><polyline points="60,340 60,320 80,320"/><polyline points="340,340 340,320 320,320"/></g>
+        </svg>
+      </div>
 
-  <section id="home" class="hero">
-    <div class="hero-content">
-    <text style="font-size: 100px;">
-      <b>YOUR GAME <span class="dies-word">DIES.</span></b>
-    </text>
-      <h1 class="revive-text"><span>WE REVIVE THEM.</span></h1>
-      <p>
-        Your downfall begins, our work begins.<br> 
-        Losing players? Stagnant revenue? We make sure your game not only recovers, but THRIVES!
-      </p>
+      <div class="hero-overlay">
+        <div class="hero-sub">YOUR GAME DIES.</div>
+        <h1 class="hero-title"><span class="w">WE </span><span class="rv">REVIVE</span><br>THEM.</h1>
+        <p class="hero-desc">Losing players? Stagnant revenue?<br>We make your game not only recover — but <strong style="color:#fff">THRIVE.</strong></p>
 
-      <div class="engine-strip">
+        <!-- engine logos — icons only, no labels -->
         <div class="engine-logos">
-          <img src="../images/Roblox_Logo_2022-removebg-preview.png" alt="Roblox">
-          <img src="../images/unity.png" alt="Unity">
-          <img src="../images/unreal.svg" alt="Unreal Engine">
+          <div class="engine-logo-item">
+            <img src="images/Roblox_Logo_2022-removebg-preview.png" alt="Roblox" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="logo-ph" style="display:none">RBLX</div>
+          </div>
+          <div class="engine-logo-item">
+            <img src="images/unity.png" alt="Unity" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="logo-ph" style="display:none">UNITY</div>
+          </div>
+          <div class="engine-logo-item">
+            <img src="images/unreal.svg" alt="Unreal Engine" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="logo-ph" style="display:none">UE5</div>
+          </div>
         </div>
-      </div>
-    </div>
-  </section>
-  
-  <section id="about" class="section glass">
-    <h2><center>About Us</center></h2>
-    <p>
-      <center>Bevel Creatives is a Game Development & Recovery Studio from Nepal founded by Bibidh Gautam & Kaustuv Kumar Batajoo, specialized in rejuvenating struggling games of passionate developers. Founded by young and passionate game development freelancers, our expert team dives deep into your game's mechanics, player behavior, and monetization strategies to determine and execute the steps needed to turn things around.</center>
-      <br><center>We recruited a team of very young, innovative and brilliant minds & trained them in one specialized field each. This has made us a very efficient and technically brilliant group, and we believe that the demographic of our team is well-suited to understand and work with modern game development trends mostly catered towards teenagers.</center>
-      <br><center>No upfront, no fees: Only a share of the growth we create.</center>
-      <center><B>If we reach out, it's because your game has unrealized potential, ready to be revived.</B></center>
-    </p>
-  </section>
 
-  <section id="services" class="section">
-    <h2 style="text-align: center; margin-bottom: 50px;">What We Upgrade</h2>
-    <div class="service-grid-2x2">
-      <div class="glass service-card">
-        <div class="card-bg" style="background-image: url('../images/retention.png');"></div>
-        <div class="card-content">
-          <h3>Player Retention</h3>
-          <p>Session length, addictiveness, and dopamine pacing to keep players coming back.</p>
-        </div>
-      </div>
-      <div class="glass service-card">
-        <div class="card-bg" style="background-image: url('../images/monetization.png');"></div>
-        <div class="card-content">
-          <h3>Monetization Balance</h3>
-          <p>Optimizing revenue streams without sacrificing player trust or game integrity.</p>
-        </div>
-      </div>
-      <div class="glass service-card">
-        <div class="card-bg" style="background-image: url('../images/analytics.webp');"></div>
-        <div class="card-content">
-          <h3>Live Analytics</h3>
-          <p>Deep dives into daily metrics, projections, and complex behavioral funnels.</p>
-        </div>
-      </div>
-      <div class="glass service-card">
-        <div class="card-bg" style="background-image: url('../images/gameplay.avif');"></div>
-        <div class="card-content">
-          <h3>Core Gameplay Loops</h3>
-          <p>Refining the moment-to-moment experience that defines your game's feel.</p>
+        <div class="hero-btns">
+          <button class="hbtn" data-popup="contact">&#9654; START REVIVAL</button>
+          <button class="hbtn g" data-popup="services">OUR SERVICES</button>
         </div>
       </div>
     </div>
-  </section>
 
-<div class="h-marquee" aria-hidden="true">
-  <div class="h-marquee-track">
-    <div class="h-marquee-group">
-      <span>🎮 GAME DESIGN</span>
-      <span>👁️ RETENTION</span>
-      <span>💵 MONETIZATION</span>
-      <span>💻 UI / UX</span>
-      <span>⚔️ PROGRESSION</span>
-      <span>📈 ANALYTICS</span>
-      <span>➕ LIVE OPS</span>
+    <!-- ── RIGHT PANEL ── -->
+    <div class="right-panel">
+
+      <!-- BLOG MODULE -->
+      <div class="mod-blog">
+        <div class="mod-label">INDUSTRY INSIGHTS</div>
+        <div class="blog-list-scroll">
+          <div class="blog-entry" data-popup="blogs">
+            <div class="blog-cat">Optimization</div>
+            <div class="blog-t">Optimizing Mobile Performance for Unreal Engine 5</div>
+            <div class="blog-meta">7 min · Oct 28, 2025</div>
+          </div>
+          <div class="blog-entry" data-popup="blogs">
+            <div class="blog-cat">Monetization</div>
+            <div class="blog-t">The State of Roblox Monetization in 2025</div>
+            <div class="blog-meta">6 min · Oct 26, 2025</div>
+          </div>
+          <div class="blog-entry" data-popup="blogs">
+            <div class="blog-cat">Recovery Strategy</div>
+            <div class="blog-t">How to Identify Churn Points in Your First 5 Minutes</div>
+            <div class="blog-meta">5 min · Oct 24, 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GLOBE MODULE -->
+      <div class="mod-globe">
+        <div class="mod-label" style="align-self:flex-start;">GLOBAL REACH</div>
+        <canvas id="globe-canvas"></canvas>
+        <div class="globe-label">WORLDWIDE GAME NETWORK</div>
+      </div>
+
+      <!-- RIGHT NAV BUTTONS -->
+      <div class="right-nav-btns">
+        <button class="snav g" data-popup="results"><span class="ico">&#9656;</span>RESULTS</button>
+        <button class="snav o" data-popup="contact"><span class="ico">&#9656;</span>CONTACT</button>
+      </div>
     </div>
-    <div class="h-marquee-group" aria-hidden="true">
-      <span>🎮 GAME DESIGN</span>
-      <span>👁️ RETENTION</span>
-      <span>💵 MONETIZATION</span>
-      <span>💻 UI / UX</span>
-      <span>⚔️ PROGRESSION</span>
-      <span>📈 ANALYTICS</span>
-      <span>➕ LIVE OPS</span>
+
+  </div><!-- /game-main -->
+
+  <div class="bottom-bar">
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <span class="tick-item">SYS: <span class="hi">BEVEL-OS v2.4</span></span>
+        <span class="tick-item">STATUS: <span class="ok">ALL SYSTEMS NOMINAL</span></span>
+        <span class="tick-item">GAMES REVIVED: <span class="hi">20+</span></span>
+        <span class="tick-item">REVENUE GENERATED: <span class="ok">$1,000,000+</span></span>
+        <span class="tick-item">PLAYERS ENGAGED: <span class="hi">30M+</span></span>
+        <span class="tick-item">DEVELOPERS SERVED: <span class="ok">35+</span></span>
+        <span class="tick-item">MODEL: <span class="hi">ZERO UPFRONT — REVENUE SHARE ONLY</span></span>
+        <span class="tick-item">SYS: <span class="hi">BEVEL-OS v2.4</span></span>
+        <span class="tick-item">STATUS: <span class="ok">ALL SYSTEMS NOMINAL</span></span>
+        <span class="tick-item">GAMES REVIVED: <span class="hi">20+</span></span>
+        <span class="tick-item">REVENUE GENERATED: <span class="ok">$1,000,000+</span></span>
+        <span class="tick-item">PLAYERS ENGAGED: <span class="hi">30M+</span></span>
+        <span class="tick-item">MODEL: <span class="hi">ZERO UPFRONT — REVENUE SHARE ONLY</span></span>
+      </div>
+    </div>
+    <div class="bar-clock" id="bar-clock">00:00:00</div>
+  </div>
+</div>
+
+<!-- ══ POPUPS ══════════════════════════ -->
+
+<!-- ABOUT -->
+<div class="popup-overlay" id="popup-about">
+  <div class="popup-box">
+    <button class="popup-close" data-close="about">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // STUDIO PROFILE</div>
+    <div class="popup-title">About Us</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <p class="about-p">Bevel Creatives is a <strong style="color:var(--cyan)">Game Development &amp; Recovery Studio</strong> from Nepal founded by Bibidh Gautam &amp; Kaustuv Kumar Batajoo, specialized in rejuvenating struggling games of passionate developers.</p>
+    <p class="about-p">Founded by young and passionate game development freelancers, our expert team dives deep into your game's mechanics, player behavior, and monetization strategies to determine and execute the steps needed to turn things around.</p>
+    <div class="inner-div"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <p class="about-p">We recruited a team of very young, innovative and brilliant minds &amp; trained them in one specialized field each — making us technically brilliant and uniquely suited to understand modern game trends catered towards teenagers.</p>
+    <p class="about-p">No upfront, no fees: Only a share of the growth we create.</p>
+    <div class="about-hl">IF WE REACH OUT — YOUR GAME HAS UNREALIZED POTENTIAL, READY TO BE REVIVED.</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="popup-overlay" id="popup-services">
+  <div class="popup-box">
+    <button class="popup-close" data-close="services">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // SERVICE MODULES</div>
+    <div class="popup-title">What We Upgrade</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="mq-wrap"><div class="mq-track"><span class="mq-item"><span class="hi">&#9658;</span> GAME DESIGN</span><span class="mq-item"><span class="hi">&#9658;</span> RETENTION</span><span class="mq-item"><span class="hi">&#9658;</span> MONETIZATION</span><span class="mq-item"><span class="hi">&#9658;</span> UI / UX</span><span class="mq-item"><span class="hi">&#9658;</span> PROGRESSION</span><span class="mq-item"><span class="hi">&#9658;</span> ANALYTICS</span><span class="mq-item"><span class="hi">&#9658;</span> LIVE OPS</span><span class="mq-item"><span class="hi">&#9658;</span> GAME DESIGN</span><span class="mq-item"><span class="hi">&#9658;</span> RETENTION</span><span class="mq-item"><span class="hi">&#9658;</span> MONETIZATION</span><span class="mq-item"><span class="hi">&#9658;</span> UI / UX</span><span class="mq-item"><span class="hi">&#9658;</span> PROGRESSION</span><span class="mq-item"><span class="hi">&#9658;</span> ANALYTICS</span><span class="mq-item"><span class="hi">&#9658;</span> LIVE OPS</span></div></div>
+    <div class="svc-grid">
+      <div class="svc-card"><span class="svc-icon">&#128065;</span><div class="svc-title">Player Retention</div><p>Session length, addictiveness, and dopamine pacing to keep players coming back.</p></div>
+      <div class="svc-card"><span class="svc-icon">&#128181;</span><div class="svc-title">Monetization Balance</div><p>Optimizing revenue streams without sacrificing player trust or game integrity.</p></div>
+      <div class="svc-card"><span class="svc-icon">&#128202;</span><div class="svc-title">Live Analytics</div><p>Deep dives into daily metrics, projections, and complex behavioral funnels.</p></div>
+      <div class="svc-card"><span class="svc-icon">&#127918;</span><div class="svc-title">Core Gameplay Loops</div><p>Refining the moment-to-moment experience that defines your game's feel.</p></div>
+      <div class="svc-card"><span class="svc-icon">&#128187;</span><div class="svc-title">UI / UX Design</div><p>Interfaces that feel intuitive, look stunning, and guide players naturally.</p></div>
+      <div class="svc-card"><span class="svc-icon">&#9876;</span><div class="svc-title">Progression Systems</div><p>Carefully designed advancement paths that reward and sustain engagement.</p></div>
     </div>
   </div>
 </div>
 
-<section id="team" class="section">
-  <h2 style="text-align: center;">Meet Our Team</h2>
+<!-- TEAM -->
+<div class="popup-overlay" id="popup-team">
+  <div class="popup-box">
+    <button class="popup-close" data-close="team">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // CREW MANIFEST</div>
+    <div class="popup-title">Meet Our Team</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="team-execs">
+      <div class="tc feat"><div class="tc-av"><img src="images/1765962601904.png" alt="Bibidh" onerror="this.outerHTML='<div class=\'tc-init\'>BG</div>'"></div><div class="tc-name">Bibidh Gautam</div><div class="tc-role">CEO &amp; Co-Founder</div><div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;"><a href="https://www.linkedin.com/in/bibidh" target="_blank" class="si si-li" aria-label="LinkedIn" style="width:36px;height:36px;font-size:0.85rem;flex-shrink:0;"><i class="fa-brands fa-linkedin-in"></i></a><a href="CEO" class="mini-a">Learn More</a></div><div class="tc-desc">Drives the studio's vision and strategic direction.</div></div>
+      <div class="tc feat"><div class="tc-av"><img src="images/k2.jpg" alt="Kaustuv" onerror="this.outerHTML='<div class=\'tc-init\'>KB</div>'"></div><div class="tc-name">Kaustuv Batajoo</div><div class="tc-role">Managing Director</div><div style="margin-top:8px;display:flex;gap:8px;justify-content:center;"><a href="https://www.linkedin.com/in/kaustuvbatajoo" target="_blank" class="si si-li" aria-label="LinkedIn" style="width:36px;height:36px;font-size:0.85rem;flex-shrink:0;"><i class="fa-brands fa-linkedin-in"></i></a></div><div class="tc-desc">Co-Founder &amp; MD. Oversees all operations and project delivery.</div></div>
+    </div>
+    <div class="inner-div"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="team-grid">
+      <div class="tc"><div class="tc-av"><img src="images/Chirag.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>CS</div>'"></div><div class="tc-name">Chirag Sapkota</div><div class="tc-role">Community Mgr</div><div class="tc-desc">Oversees community engagement and player feedback.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/Himanshu.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>HR</div>'"></div><div class="tc-name">Himanshu Rawal</div><div class="tc-role">Tech Lead</div><div class="tc-desc">Leads game systems, performance, and scalability.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/Aayusha.webp" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>AK</div>'"></div><div class="tc-name">Aayusha K.C.</div><div class="tc-role">Creative Lead</div><div class="tc-desc">Leads creative direction and design for all projects.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/Siddid.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>SP</div>'"></div><div class="tc-name">Siddid Pandey</div><div class="tc-role">QA Lead</div><div class="tc-desc">Leads quality assurance and allocates QA resources.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/prajwol.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>PC</div>'"></div><div class="tc-name">Prajwol Chapagain</div><div class="tc-role">Resources Mgr</div><div class="tc-desc">Manages necessary resources for the business.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/default.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>DP</div>'"></div><div class="tc-name">Deepak</div><div class="tc-role">Programmer</div><div class="tc-desc">Codes the designed systems and functions.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/default.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>DS</div>'"></div><div class="tc-name">Dipesh Shah</div><div class="tc-role">QA Tester</div><div class="tc-desc">Checks for bugs and potential improvements.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/samreen.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>SK</div>'"></div><div class="tc-name">Samreen Khadka</div><div class="tc-role">Outreach Lead</div><div class="tc-desc">Handles outreach and visibility for the company.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/default.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>ST</div>'"></div><div class="tc-name">Samraj Thapa</div><div class="tc-role">QA Tester</div><div class="tc-desc">Checks for bugs and potential improvements.</div></div>
+      <div class="tc"><div class="tc-av"><img src="images/default.jpg" alt="" onerror="this.outerHTML='<div class=\'tc-init\'>SP</div>'"></div><div class="tc-name">Shreemad Pokhrel</div><div class="tc-role">Programmer</div><div class="tc-desc">Codes the designed systems and functions.</div></div>
+    </div>
+  </div>
+</div>
 
-  <div class="team-execs">
-    <!-- CEO -->
-    <div class="glass team-card featured">
-      <div class="member-image"><img src="../images/1765962601904.png" alt="Bibidh Gautam"></div>
-      <div class="member-info">
-        <h4>Bibidh Gautam</h4>
-        <p>Chief Executive Officer (CEO)</p>
+<!-- RESULTS -->
+<div class="popup-overlay" id="popup-results">
+  <div class="popup-box">
+    <button class="popup-close" data-close="results">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // SCOREBOARD</div>
+    <div class="popup-title">Results</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="res-grid">
+      <div class="res-card"><span class="res-num">+512%</span><span class="res-lbl">RETENTION BOOST</span><div class="res-desc">Avg session time from ~5 min to 20+ min.</div></div>
+      <div class="res-card" style="border-top-color:var(--cyan);background:rgba(0,245,255,0.03);border-color:rgba(0,245,255,0.13)"><span class="res-num c">+2094%</span><span class="res-lbl">REVENUE GROWTH</span><div class="res-desc">Almost 30x avg revenue growth per game.</div></div>
+      <div class="res-card" style="border-top-color:var(--orange);background:rgba(255,107,53,0.03);border-color:rgba(255,107,53,0.13)"><span class="res-num o">+18%</span><span class="res-lbl">POSITIVE REVIEWS</span><div class="res-desc">Avg improvement in Like-To-Dislike ratio.</div></div>
+    </div>
+    <div class="inner-div"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="milestones">
+      <div class="m-pill">&#127918; 20+ Games Revived</div>
+      <div class="m-pill">&#128187; 35+ Developers Served</div>
+      <div class="m-pill">&#128181; $1M+ Generated</div>
+      <div class="m-pill">&#127760; 30M+ Players Engaged</div>
+      <div class="m-pill">&#129309; 10+ Jobs Created</div>
+    </div>
+  </div>
+</div>
 
-        <div class="member-buttons">
-          <a href="https://www.linkedin.com/in/bibidh" target="_blank" class="mini-btn icon-btn">
-            <img src="../images/linkedin.png" alt="LinkedIn">
-          </a>
-          <a href="CEO/" class="mini-btn alt">Learn More</a>
-        </div>
+<!-- BLOGS -->
+<div class="popup-overlay" id="popup-blogs">
+  <div class="popup-box">
+    <button class="popup-close" data-close="blogs">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // INDUSTRY INSIGHTS</div>
+    <div class="popup-title">Blogs</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="blog-popup-list">
+      <div class="blog-popup-item">
+        <div class="bpi-cat">Optimization</div>
+        <div class="bpi-title">Optimizing Mobile Performance for Unreal Engine 5</div>
+        <p class="bpi-lead">In the mobile market, performance is the silent killer of retention. A beautiful game that runs at 20 FPS will always lose to a smooth game running at 60 FPS. We break down draw calls, forward shading, LODs, and Nanite considerations for mobile builds.</p>
+        <div class="bpi-meta">By Bibidh Gautam &nbsp;·&nbsp; 7 min read &nbsp;·&nbsp; Oct 28, 2025</div>
+        <a href="Blogs/mobile-optimization-guide.html" class="bpi-read">Read Article &#8594;</a>
+      </div>
+      <div class="blog-popup-item">
+        <div class="bpi-cat">Monetization</div>
+        <div class="bpi-title">The State of Roblox Monetization in 2025</div>
+        <p class="bpi-lead">The era of "Pay-to-Win" dominance on Roblox is ending. In 2025, the most successful experiences are pivoting toward engagement-based economies and ethical spending loops — subscriptions, UGC integration, and the free-to-fun ratio.</p>
+        <div class="bpi-meta">By Bibidh Gautam &nbsp;·&nbsp; 6 min read &nbsp;·&nbsp; Oct 26, 2025</div>
+        <a href="Blogs/roblox-monetization-2025.html" class="bpi-read">Read Article &#8594;</a>
+      </div>
+      <div class="blog-popup-item">
+        <div class="bpi-cat">Recovery Strategy</div>
+        <div class="bpi-title">How to Identify Churn Points in Your First 5 Minutes</div>
+        <p class="bpi-lead">Player retention isn't just about the endgame — it's about the first 300 seconds. 60% of churn happens during initial asset download or the first tutorial quest. We show you the 3 key metrics to track and how behavioral funnels reveal the truth.</p>
+        <div class="bpi-meta">By Bibidh Gautam &nbsp;·&nbsp; 5 min read &nbsp;·&nbsp; Oct 24, 2025</div>
+        <a href="Blogs/churnpoints.html" class="bpi-read">Read Article &#8594;</a>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- MD -->
-    <div class="glass team-card featured">
-      <div class="member-image"><img src="../images/kaustuv.jpeg" alt="Kaustuv Kumar Batajoo"></div>
-      <div class="member-info">
-        <h4>Kaustuv Kumar Batajoo</h4>
-        <p>Managing Director (MD)</p>
-
-        <div class="member-buttons">
-          <a href="https://www.linkedin.com/in/kaustuvbatajoo" target="_blank" class="mini-btn icon-btn">
-            <img src="../images/linkedin.png" alt="LinkedIn">
-          </a>
+<!-- CONTACT -->
+<div class="popup-overlay" id="popup-contact">
+  <div class="popup-box">
+    <button class="popup-close" data-close="contact">&#x29BB;</button>
+    <div class="popup-tag"><span class="dot-blink"></span>SYSTEM // ESTABLISH CONNECTION</div>
+    <div class="popup-title">Get In Touch</div>
+    <div class="popup-divider"><div class="line"></div><div class="diamond"></div><div class="line"></div></div>
+    <div class="contact-grid">
+      <form class="cf" onsubmit="sendEmail(event)">
+        <div><label class="fl">YOUR NAME / ALIAS</label><input class="fi" type="text" placeholder="Enter your name" required></div>
+        <div><label class="fl">YOUR GAME NAME</label><input class="fi" type="text" placeholder="Game title" required></div>
+        <div><label class="fl">TELL US ABOUT YOUR GAME</label><textarea class="fi" rows="4" placeholder="Briefly describe your game..."></textarea></div>
+        <button type="submit" class="f-submit">SEND MESSAGE &#9992;</button>
+      </form>
+      <div class="ci">
+        <h3>Ready to transform your game?</h3>
+        <p>No upfront costs, no hidden fees — only a share of the growth we create together.</p>
+        <div class="social-wrap">
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=bevelcreatives@gmail.com" target="_blank" class="si si-gm" aria-label="Gmail"><i class="fa-brands fa-google"></i></a>
+          <a href="https://discord.gg/36C7PUQXyv" target="_blank" class="si si-dc" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+          <a href="https://www.linkedin.com/company/bevelcreatives/" target="_blank" class="si si-li" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="team-grid">
-    <!-- ROW MEMBERS -->
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/Chirag.jpg" alt="Chirag Sapkota"></div>
-      <div class="member-info">
-        <h4>Chirag Sapkota</h4>
-        <p>Community Manager</p>
-        <span class="member-desc">Oversees community engagement and player feedback management.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/Himanshu.jpg" alt="Himanshu Rawal"></div>
-      <div class="member-info">
-        <h4>Himanshu Rawal</h4>
-        <p>Tech Lead</p>
-        <span class="member-desc">Leads game systems, performance, and scalability.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/Aayusha.webp" alt="Aayusha"></div>
-      <div class="member-info">
-        <h4>Aayusha K.C.</h4>
-        <p>Creative Lead</p>
-        <div class="member-buttons">
-        </div>
-        <span class="member-desc">Leads creative direction and design for all projects.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/Siddid.jpg" alt="Siddid Pandey"></div>
-      <div class="member-info">
-        <h4>Siddid Pandey</h4>
-        <p>QA Lead</p>
-        <span class="member-desc">Leads quality assurance assessments and allocates QA resources.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/prajwol.jpg" alt="Prajwol"></div>
-      <div class="member-info">
-        <h4>Prajwol Chapagain</h4>
-        <p>Resources Manager</p>
-        <span class="member-desc">Manages necessary resources of all sorts required for the business.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/default.jpg" alt="Deepak"></div>
-      <div class="member-info">
-        <h4>Deepak</h4>
-        <p>Programmer</p>
-        <span class="member-desc">Codes the designed systems and functions.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/default.jpg" alt="Dipesh"></div>
-      <div class="member-info">
-        <h4>Dipesh Shah</h4>
-        <p>QA Tester</p>
-        <span class="member-desc">Checks for bugs and potential improvements.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/samreen.jpg" alt="Samreen"></div>
-      <div class="member-info">
-        <h4>Samreen Khadka</h4>
-        <p>Outreach Lead</p>
-        <span class="member-desc">Handles outreach and visibility for the company.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/default.jpg" alt="Samraj"></div>
-      <div class="member-info">
-        <h4>Samraj Thapa</h4>
-        <p>QA Tester</p>
-        <span class="member-desc">Checks for bugs and potential improvements.</span>
-      </div>
-    </div>
-
-    <div class="glass team-card">
-      <div class="member-image"><img src="../images/default.jpg" alt="Shreemad"></div>
-      <div class="member-info">
-        <h4>Shreemad Pokhrel</h4>
-        <p>Programmer</p>
-        <span class="member-desc">Codes the designed systems and functions.</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-  <section id="wins" class="wins-section">
-    <h2>Results</h2>
-    <div class="wins-grid">
-      <div class="glass win-card">
-        <h3>+512% Retention</h3>
-        <p>Average session time increased from ~5 minutes to over 20 minutes!</p>
-      </div>
-      <div class="glass win-card">
-        <h3>+2094% Revenue</h3>
-        <p>Average growth in revenue per game has increased by almost 30x on average.</p>
-      </div>
-      <div class="glass win-card highlight">
-        <h3>+18% Positive Review</h3>
-        <p>Average improvement in Like-To-Dislike ratio per game.</p>
-      </div>
-    </div>
-    <div class="wins-mini-grid">
-     <div class="glass mini-win"><span class="mini-ico">🎮</span><span>20+ Games Revived</span></div>
-     <div class="glass mini-win"><span class="mini-ico">🧑🏻‍💻</span><span>35+ Developers Served</span></div>
-     <div class="glass mini-win"><span class="mini-ico">💵</span><span>$1M+ Generated</span></div>
-     <div class="glass mini-win"><span class="mini-ico">🌐</span><span>30M+ Players Engaged</span></div>
-     <div class="glass mini-win"><span class="mini-ico">🧑‍🤝‍🧑</span><span>10+ Employment Provided</span></div>
-    </div>
-  </section>
-
-<section id="contact" class="section">
-  <h2 style="text-align:center;">Get In <span style="color:cyan;">Touch</span></h2>
-  <p style="text-align:center; color:#aaa; margin-bottom:60px;">
-    Ready to transform your indie game? Let’s talk.
-  </p>
-
-  <div class="contact-grid">
-    <!-- FORM -->
-<form class="glass contact-form" onsubmit="sendEmail(event)">
-      <label>Your Name/Alias</label>
-      <input type="text" placeholder="Enter your name">
-
-      <label>Your Game Name</label>
-      <input type="text" placeholder="Game title">
-
-      <label>Tell Us About Your Game</label>
-      <textarea rows="5" placeholder="Briefly describe your game..."></textarea>
-
-      <button type="submit">Send Message ✈</button>
-  </form>
-
-  <!-- CONTACT ICONS (below form) -->
-<div class="contact-actions" aria-label="Contact links">
-  <a class="contact-icon-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=bevelcreatives@gmail.com"
-   target="_blank" rel="noopener" aria-label="Gmail">
-  <img src="../images/Gmail.png" alt="Gmail">
-  </a>
-
-  <a class="contact-icon-btn" href="https://discord.gg/36C7PUQXyv"
-   target="_blank" rel="noopener" aria-label="Discord">
-  <img src="../images/discord.png" alt="Discord">
-  </a>
-
-    <a class="contact-icon-btn" href="https://www.linkedin.com/company/bevelcreatives/"
-     target="_blank" rel="noopener" aria-label="LinkedIn">
-    <img src="../images/linkedin.png" alt="LinkedIn">
-  </a>
-  </div>
-
-  <div class="footer-bottom">© 2025 Bevel Creatives Pvt. Ltd. All rights reserved.</div>
-</section>
-<script>
-  // LOADER SCRIPT
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  window.scrollTo(0, 0);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const loader = document.getElementById('loader');
-    const body = document.body;
-    
-    setTimeout(() => {
-      if (loader) {
-        loader.classList.add('loader-hidden');
-        body.classList.remove('loading');
-        setTimeout(() => {
-          loader.style.display = 'none';
-        }, 800);
-      }
-    }, 2500);
-  });
-
-  // BEEHIVE INTERACTIVE SCRIPT
-  const canvas = document.getElementById('hex-canvas');
-  const ctx = canvas.getContext('2d');
-  let width, height, rows, cols;
-  const hexRadius = 30;
-  const mouse = { x: -1000, y: -1000 };
-
-  function init() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    cols = Math.ceil(width / (hexRadius * 1.5)) + 1;
-    rows = Math.ceil(height / (hexRadius * Math.sqrt(3))) + 1;
-  }
-
-  window.addEventListener('resize', init);
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  function drawHexagon(x, y, radius, opacity) {
-    ctx.beginPath();
-    ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 6; i++) {
-      ctx.lineTo(x + radius * Math.cos(i * Math.PI / 3), y + radius * Math.sin(i * Math.PI / 3));
-    }
-    ctx.closePath();
-    ctx.stroke();
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        let x = c * hexRadius * 1.5;
-        let y = r * hexRadius * Math.sqrt(3);
-        if (c % 2 === 1) y += (hexRadius * Math.sqrt(3)) / 2;
-
-        const dist = Math.hypot(x - mouse.x, y - mouse.y);
-        let opacity = 0.05; // Default dim glow
-        let sizeMod = 0;
-
-        if (dist < 150) {
-          opacity = 0.4 - (dist / 150) * 0.35;
-          sizeMod = (1 - dist / 150) * 3;
-        }
-
-        drawHexagon(x, y, hexRadius + sizeMod, opacity);
-      }
-    }
-    requestAnimationFrame(animate);
-  }
-
-  init();
-  animate();
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.querySelector(".hamburger");
-  const navbar = document.querySelector(".navbar");
-
-  if (!hamburger || !navbar) return;
-
-  hamburger.addEventListener("click", () => {
-    const open = navbar.classList.toggle("nav-open");
-    hamburger.classList.toggle("is-open", open);
-    hamburger.setAttribute("aria-expanded", open);
-  });
-
-  // Close when a nav link is clicked
-  navbar.querySelectorAll("nav a").forEach(link => {
-    link.addEventListener("click", () => {
-      navbar.classList.remove("nav-open");
-      hamburger.classList.remove("is-open");
-      hamburger.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  // Close on resize back to desktop
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 768){
-      navbar.classList.remove("nav-open");
-      hamburger.classList.remove("is-open");
-      hamburger.setAttribute("aria-expanded", "false");
-    }
-  });
-});
-</script>
+<script src="main.js"></script>
 </body>
 </html>
