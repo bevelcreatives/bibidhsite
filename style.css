@@ -499,6 +499,11 @@ textarea.fi{resize:vertical;min-height:90px;}
    RESPONSIVE — MOBILE
 ══════════════════════════════════════ */
 @media(max-width:680px){
+  /* restore normal cursor on touch devices */
+  *{cursor:auto!important;}
+  #sci-cursor{display:none!important;}
+  a,button,[data-popup],[data-close]{cursor:pointer!important;}
+
   /* show hamburger only on mobile */
   .bar-right{display:flex;}
 
@@ -563,14 +568,16 @@ textarea.fi{resize:vertical;min-height:90px;}
   .hero-desc{font-size:14px;}
   .hud-module-gauge   {order:2;width:100%;border-bottom:1px solid var(--b2);}
   .hud-module-data    {order:3;width:100%;border-bottom:1px solid var(--b2);}
-  .hud-module-alert   {display:none!important;} /* removed on mobile */
-  .mod-blog           {order:4;width:100%;border-bottom:1px solid var(--b2);min-height:180px;}
-  .mod-globe          {display:none;}            /* hide globe on mobile to save space */
-  .side-nav-btns      {order:5;width:100%;border-bottom:1px solid var(--b2);}
-  .right-nav-btns     {order:6;width:100%;border-bottom:1px solid var(--b2);}
+  .hud-module-alert   {display:none!important;}
+  .mod-globe          {order:4;width:100%;height:260px;border-bottom:1px solid var(--b2);
+                       display:flex;flex-direction:column;flex:none;}
+  #globe-canvas       {width:100%;height:210px;flex:none;display:block;}
+  .mod-blog           {display:none!important;}
+  .side-nav-btns      {display:none!important;}
+  .right-nav-btns     {display:none!important;}
 
   /* panel backgrounds for individual modules */
-  .hud-module-gauge,.hud-module-data,.side-nav-btns,.right-nav-btns,.mod-blog{
+  .hud-module-gauge,.hud-module-data,.mod-globe{
     background:rgba(2,12,20,0.82);
     backdrop-filter:blur(10px);
   }
@@ -582,5 +589,13 @@ textarea.fi{resize:vertical;min-height:90px;}
   .team-execs{flex-direction:column;gap:1rem;height:auto;}
   .team-execs .tc.feat{max-width:100%;}
   .team-execs .tc.feat .tc-av{width:100%;height:200px;flex:none;}
-  .team-grid{grid-template-columns:repeat(2,1fr);gap:0.4rem;}
+  .team-grid{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:0.4rem;
+  }
+  .team-grid>.tc{
+    width:calc(33.333% - 0.27rem);
+    flex-shrink:0;
+  }
+  /* override desktop nth-child centering — flexbox handles it */
+  .team-grid>.tc:nth-child(9),.team-grid>.tc:nth-child(10){grid-column:auto;}
 }

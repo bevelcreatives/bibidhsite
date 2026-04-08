@@ -249,12 +249,21 @@ ham.addEventListener('click',()=>{const o=mm.classList.toggle('open');ham.classL
   let W,H,R,gCX,gCY;
 
   function setSize(){
-    W=cv.offsetWidth||150; H=cv.offsetHeight||200;
-    cv.width=W; cv.height=H;
+    const r=cv.getBoundingClientRect();
+    const w=r.width||cv.offsetWidth;
+    const h=r.height||cv.offsetHeight;
+    if(!w||!h)return false;
+    cv.width=Math.round(w); cv.height=Math.round(h);
+    W=cv.width; H=cv.height;
     R=Math.min(W,H)*0.42; gCX=W/2; gCY=H/2;
+    return true;
   }
-  setSize();
-  let rsTO; window.addEventListener('resize',()=>{clearTimeout(rsTO);rsTO=setTimeout(setSize,120);});
+  /* Retry sizing until layout is ready */
+  function initSize(){if(!setSize()){setTimeout(initSize,50);}}
+  initSize();
+  let rsTO;
+  window.addEventListener('resize',()=>{clearTimeout(rsTO);rsTO=setTimeout(setSize,120);});
+  window.addEventListener('orientationchange',()=>{setTimeout(setSize,200);});
 
   function proj(lat,lng){
     const phi=lat*Math.PI/180, lam=(lng+rotY)*Math.PI/180;
@@ -288,6 +297,7 @@ ham.addEventListener('click',()=>{const o=mm.classList.toggle('open');ham.classL
   }
 
   function draw(){
+    if(!W||!H){if(!setSize()){requestAnimationFrame(draw);return;}}
     ctx.clearRect(0,0,W,H);
 
     /* Ocean sphere */

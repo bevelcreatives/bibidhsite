@@ -232,12 +232,20 @@ window.addEventListener('load', () => {
   let W,H,R,gCX,gCY;
 
   function setSize(){
-    W=cv.offsetWidth||120; H=cv.offsetHeight||120;
-    cv.width=W; cv.height=H;
+    const r=cv.getBoundingClientRect();
+    const w=r.width||cv.offsetWidth;
+    const h=r.height||cv.offsetHeight;
+    if(!w||!h)return false;
+    cv.width=Math.round(w); cv.height=Math.round(h);
+    W=cv.width; H=cv.height;
     R=Math.min(W,H)*0.42; gCX=W/2; gCY=H/2;
+    return true;
   }
-  setSize();
-  let rsTO; window.addEventListener('resize',()=>{clearTimeout(rsTO);rsTO=setTimeout(setSize,120);});
+  function initSize(){if(!setSize()){setTimeout(initSize,50);}}
+  initSize();
+  let rsTO;
+  window.addEventListener('resize',()=>{clearTimeout(rsTO);rsTO=setTimeout(setSize,120);});
+  window.addEventListener('orientationchange',()=>{setTimeout(setSize,200);});
 
   function proj(lat,lng){
     const phi=lat*Math.PI/180,lam=(lng+rotY)*Math.PI/180;
@@ -271,6 +279,7 @@ window.addEventListener('load', () => {
   }
 
   function draw(){
+    if(!W||!H){if(!setSize()){requestAnimationFrame(draw);return;}}
     ctx.clearRect(0,0,W,H);
     const sph=ctx.createRadialGradient(gCX-R*0.3,gCY-R*0.3,R*0.05,gCX,gCY,R);
     sph.addColorStop(0,'#011e30');sph.addColorStop(1,'#00060e');
