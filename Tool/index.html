@@ -288,6 +288,26 @@
     /* Export buttons container */
     #exportBtns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
+    /* Delete confirmation popup */
+    .del-wrap { position: relative; display: inline-flex; }
+    .del-confirm {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: var(--surf);
+      border: 1px solid var(--red);
+      border-radius: 8px;
+      padding: 10px 12px;
+      gap: 8px;
+      align-items: center;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+      font-size: 13px;
+      z-index: 50;
+    }
+    .del-confirm.open { display: flex; }
+
     /* ── Eligibility panel ───────────────────────────────────────────────── */
     #panel-eligibility { align-items: center; justify-content: center; }
     .elig-card {
@@ -474,7 +494,14 @@
 
     <!-- Footer -->
     <footer class="payout-footer">
-      <button class="btn btn-red"  id="btnDel"  onclick="deleteCurrentTab()">Delete Record</button>
+      <div class="del-wrap">
+        <div class="del-confirm" id="delConfirm">
+          <span>Delete this record?</span>
+          <button class="btn btn-red"   onclick="confirmDelete()">Yes, Delete</button>
+          <button class="btn btn-ghost" onclick="cancelDelete()">Cancel</button>
+        </div>
+        <button class="btn btn-red" id="btnDel" onclick="askDelete()">Delete Record</button>
+      </div>
       <button class="btn btn-blue" id="btnPrep" onclick="prepareFile()">Prepare File</button>
       <label class="btn btn-ghost" style="cursor:pointer">
         Update CSV
@@ -515,6 +542,12 @@ let data       = {};   // { label: { usernames: string[MAX], robux: string[MAX] 
 let curTab     = null;
 let csvRows    = [];
 let processing = false;
+
+// Close delete popup on outside click
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.del-wrap');
+  if (wrap && !wrap.contains(e.target)) $('delConfirm').classList.remove('open');
+});
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 function toggleTheme() {
@@ -639,6 +672,17 @@ function updateStats() {
 }
 
 // ── Delete tab ────────────────────────────────────────────────────────────────
+function askDelete() {
+  if (!curTab) return;
+  $('delConfirm').classList.add('open');
+}
+function cancelDelete() {
+  $('delConfirm').classList.remove('open');
+}
+function confirmDelete() {
+  $('delConfirm').classList.remove('open');
+  deleteCurrentTab();
+}
 function deleteCurrentTab() {
   if (!curTab) return;
   const label = curTab;
