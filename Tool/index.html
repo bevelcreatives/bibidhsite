@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payout Tool — Bevel Creatives</title>
+  <link rel="icon" href="../images/BevelCreatives_transparent.png"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #161618;
+      --surf:   #222225;
+      --surf2:  #2b2b2f;
+      --border: #38383e;
+      --inp:    #2e2e34;
+      --text:   #e2e2e8;
+      --muted:  #76767f;
+      --blue:   #5488c4;
+      --blue-h: #6699d8;
+      --cyan:   #00d4f0;
+      --red:    #ff5533;
+      --green:  #3dd68c;
+      --yellow: #f0c040;
+    }
+    [data-theme="light"] {
+      --bg:     #f0f2f6;
+      --surf:   #ffffff;
+      --surf2:  #f4f5f8;
+      --border: #d0d4de;
+      --inp:    #eaecf2;
+      --text:   #12121e;
+      --muted:  #5c5c70;
+      --blue:   #3a6fb8;
+      --blue-h: #4a82cc;
+      --cyan:   #006fa8;
+      --red:    #cc2a10;
+      --green:  #1a9950;
+      --yellow: #b07800;
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Header ──────────────────────────────────────────────────────────── */
+    .hdr {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      height: 58px;
+      background: var(--surf);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .hdr-back {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .hdr-back:hover { color: var(--text); }
+    .hdr-logo {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+    .tab-bar { display: flex; gap: 6px; flex: 1; }
+    .tab-btn {
+      padding: 6px 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--blue); }
+    .tab-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .theme-btn {
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 11px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--blue); }
+
+    /* ── Shared button ───────────────────────────────────────────────────── */
+    .btn {
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: opacity .15s;
+    }
+    .btn:hover   { opacity: .85; }
+    .btn:disabled { opacity: .38; cursor: not-allowed; }
+    .btn-blue  { background: var(--blue); color: #fff; }
+    .btn-red   { background: var(--red);  color: #fff; }
+    .btn-ghost {
+      background: var(--surf2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover:not(:disabled) { border-color: var(--blue); }
+
+    /* ── Panels ──────────────────────────────────────────────────────────── */
+    .app-main { flex: 1; overflow: hidden; display: flex; }
+    .panel    { display: none; width: 100%; }
+    .panel.active { display: flex; flex-direction: column; }
+
+    /* ── Stats bar ───────────────────────────────────────────────────────── */
+    .stats-bar {
+      background: var(--surf);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 8px 18px;
+      gap: 0;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      row-gap: 6px;
+    }
+    /* Left: Add Date */
+    .add-area { display: flex; align-items: center; gap: 8px; }
+    .date-inp {
+      background: var(--inp);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 7px 11px;
+      font-size: 14px;
+      width: 210px;
+      outline: none;
+    }
+    .date-inp:focus { border-color: var(--blue); }
+    .date-inp.hidden { display: none; }
+
+    /* Right: stats pushed to the right */
+    .stats-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-left: auto;
+    }
+    .stat      { font-size: 14px; font-weight: 600; color: var(--cyan); }
+    .stat.dim  { color: var(--muted); font-weight: 400; }
+
+    /* ── Payout body ─────────────────────────────────────────────────────── */
+    .payout-body { flex: 1; display: flex; overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      background: var(--surf);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sb-section         { display: flex; flex-direction: column; overflow: hidden; }
+    .sb-section.records { flex: 1 1 auto; min-height: 80px; }
+    .sb-section.issues  { flex: 0 1 auto; max-height: 42%; }
+    .sb-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      padding: 9px 12px 5px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sb-label:first-child { border-top: none; }
+    .sb-label.err { color: var(--red); }
+    .sb-scroll { overflow-y: auto; flex: 1; }
+
+    .rec-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 9px 14px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .rec-btn:hover  { background: var(--surf2); }
+    .rec-btn.active { background: var(--blue); color: #fff; }
+
+    .issue-row {
+      padding: 7px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      color: var(--red);
+      word-break: break-word;
+      line-height: 1.5;
+    }
+    .issue-row.warn { color: var(--yellow); }
+
+    /* Grid area */
+    .grid-area { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .grid-hdr {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 8px 16px 6px;
+      background: var(--surf);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .grid-hdr span { font-size: 13px; font-weight: 700; color: var(--cyan); text-align: center; }
+    .grid-scroll   { flex: 1; overflow-y: auto; padding: 8px 16px; }
+    .grid-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+    .g-inp {
+      background: var(--inp);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text);
+      padding: 7px 10px;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+    .g-inp:focus { border-color: var(--blue); }
+
+    /* Empty state */
+    .empty-st {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      gap: 10px;
+      font-size: 15px;
+    }
+    .empty-st .ico { font-size: 42px; }
+
+    /* Grid wrapper */
+    .grid-wrap     { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+    .grid-wrap.on  { display: flex; }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    .payout-footer {
+      background: var(--surf);
+      border-top: 1px solid var(--border);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .footer-status { font-size: 13px; color: var(--muted); }
+    .footer-status.ok  { color: var(--cyan); }
+    .footer-status.err { color: var(--red); }
+
+    /* Export buttons container */
+    #exportBtns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    /* ── Eligibility panel ───────────────────────────────────────────────── */
+    #panel-eligibility { align-items: center; justify-content: center; }
+    .elig-card {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 50px 60px;
+      width: min(460px, 92vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .elig-card h2 { font-size: 22px; font-weight: 700; }
+    .elig-inp {
+      background: var(--inp);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      padding: 12px 16px;
+      font-size: 16px;
+      width: 100%;
+      outline: none;
+      text-align: center;
+    }
+    .elig-inp:focus { border-color: var(--blue); }
+    .elig-result { text-align: center; min-height: 80px; width: 100%; }
+    .elig-dates  { font-size: 14px; color: var(--muted); margin-bottom: 8px; line-height: 2; }
+    .elig-status { font-size: 36px; font-weight: 800; color: var(--muted); }
+    .elig-status.ok   { color: var(--green); }
+    .elig-status.bad  { color: var(--red); }
+    .elig-status.busy { font-size: 15px; font-weight: 400; color: var(--muted); }
+
+    /* ── Scrollbars ──────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar       { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
+<header class="hdr">
+  <a class="hdr-back" href="..">← bevelcreatives.com.np</a>
+  <span class="hdr-logo">⬡ Payout Tool</span>
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchPanel('payout')">📝 Payout</button>
+    <button class="tab-btn"        onclick="switchPanel('eligibility')">✅ Eligibility</button>
+  </nav>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</header>
+
+<main class="app-main">
+
+  <!-- ── Payout panel ──────────────────────────────────────────────────── -->
+  <div class="panel active" id="panel-payout">
+
+    <!-- Stats bar: Add Date on left, totals on right -->
+    <div class="stats-bar">
+      <div class="add-area">
+        <input class="date-inp hidden" id="dateInp" placeholder="Date label, then Enter" autocomplete="off"/>
+        <button class="btn btn-blue" onclick="toggleDateInput()">+ Add Date</button>
+      </div>
+      <div class="stats-right">
+        <span class="stat dim" id="sEntries">Total entries: 0</span>
+        <span class="stat"     id="sTotal">Total Amount: 0</span>
+        <span class="stat"     id="sDay">Day Total: 0</span>
+      </div>
+    </div>
+
+    <!-- Body: sidebar + grid -->
+    <div class="payout-body">
+
+      <div class="sidebar">
+        <div class="sb-section records">
+          <div class="sb-label">Payout Records</div>
+          <div class="sb-scroll" id="recList"></div>
+        </div>
+        <div class="sb-section issues" id="issueSection" style="display:none">
+          <div class="sb-label err">Eligibility Issues</div>
+          <div class="sb-scroll" id="issueList"></div>
+        </div>
+      </div>
+
+      <div class="grid-area">
+        <div class="empty-st" id="emptySt">
+          <span class="ico">📋</span>
+          <span>Click <strong>+ Add Date</strong> to begin.</span>
+        </div>
+        <div class="grid-wrap" id="gridWrap">
+          <div class="grid-hdr">
+            <span>Username</span>
+            <span>Amount (Robux)</span>
+          </div>
+          <div class="grid-scroll" id="gridScroll"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="payout-footer">
+      <button class="btn btn-red"  id="btnDel"  onclick="deleteCurrentTab()">Delete Record</button>
+      <button class="btn btn-blue" id="btnPrep" onclick="prepareFile()">Prepare File</button>
+      <label class="btn btn-ghost" style="cursor:pointer">
+        Update CSV
+        <input type="file" accept=".csv" style="display:none" onchange="importCSV(this)">
+      </label>
+      <div id="exportBtns"></div>
+      <span class="footer-status" id="footSt">Click "+ Add Date" to begin.</span>
+    </footer>
+
+  </div>
+
+  <!-- ── Eligibility panel ──────────────────────────────────────────────── -->
+  <div class="panel" id="panel-eligibility">
+    <div class="elig-card">
+      <h2>Eligibility Checker</h2>
+      <input class="elig-inp" id="eligInp" placeholder="Roblox username"
+             onkeydown="if(event.key==='Enter') checkElig()"/>
+      <button class="btn btn-blue" style="width:100%;padding:11px;font-size:15px" onclick="checkElig()">
+        Check User
+      </button>
+      <div class="elig-result">
+        <div class="elig-dates"  id="eligDates"></div>
+        <div class="elig-status" id="eligStatus"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+'use strict';
+
+const MAX = 40;
+const $ = id => document.getElementById(id);
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let data       = {};   // { label: { usernames: string[MAX], robux: string[MAX] } }
+let curTab     = null;
+let csvRows    = [];
+let processing = false;
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const html = document.documentElement;
+  const dark = html.dataset.theme === 'dark';
+  html.dataset.theme = dark ? 'light' : 'dark';
+  $('themeBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ── Panel switch ──────────────────────────────────────────────────────────────
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  $(`panel-${name}`).classList.add('active');
+  document.querySelectorAll('.tab-btn')[name === 'payout' ? 0 : 1].classList.add('active');
+}
+
+// ── Build input grid (once) ───────────────────────────────────────────────────
+(function buildGrid() {
+  const scroll = $('gridScroll');
+  for (let i = 0; i < MAX; i++) {
+    const row = document.createElement('div');
+    row.className = 'grid-row';
+
+    const u = document.createElement('input');
+    u.className = 'g-inp'; u.id = `u${i}`; u.placeholder = 'Username';
+    u.addEventListener('input', updateStats);
+    u.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $(`a${i}`).focus(); } });
+
+    const a = document.createElement('input');
+    a.className = 'g-inp'; a.id = `a${i}`; a.placeholder = 'Amount';
+    a.addEventListener('input', updateStats);
+    a.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); if (i + 1 < MAX) $(`u${i+1}`).focus(); }
+    });
+
+    row.appendChild(u); row.appendChild(a);
+    scroll.appendChild(row);
+  }
+})();
+
+// ── Date input toggle ─────────────────────────────────────────────────────────
+function toggleDateInput() {
+  const inp = $('dateInp');
+  if (inp.classList.contains('hidden')) { inp.classList.remove('hidden'); inp.focus(); }
+  else { inp.classList.add('hidden'); inp.value = ''; }
+}
+
+$('dateInp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const label = $('dateInp').value.trim();
+    if (label) addDate(label);
+  }
+  if (e.key === 'Escape') toggleDateInput();
+});
+
+// ── Add date tab ──────────────────────────────────────────────────────────────
+function addDate(label) {
+  if (data[label]) { alert('A record with that label already exists.'); return; }
+  data[label] = { usernames: Array(MAX).fill(''), robux: Array(MAX).fill('') };
+
+  const btn = document.createElement('button');
+  btn.className = 'rec-btn';
+  btn.textContent = label;
+  btn.dataset.label = label;
+  btn.onclick = () => switchTab(label);
+  $('recList').appendChild(btn);
+
+  $('dateInp').value = '';
+  $('dateInp').classList.add('hidden');
+  showGrid();
+  switchTab(label);
+}
+
+function showGrid() {
+  $('emptySt').style.display = 'none';
+  $('gridWrap').classList.add('on');
+}
+function hideGrid() {
+  $('emptySt').style.display = '';
+  $('gridWrap').classList.remove('on');
+}
+
+// ── Tab switch ────────────────────────────────────────────────────────────────
+function switchTab(label) {
+  if (curTab) saveTab();
+  curTab = label;
+  document.querySelectorAll('.rec-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.label === label)
+  );
+  const d = data[label];
+  for (let i = 0; i < MAX; i++) {
+    $(`u${i}`).value = d.usernames[i] || '';
+    $(`a${i}`).value = d.robux[i]     || '';
+  }
+  updateStats();
+}
+
+function saveTab() {
+  if (!curTab || !data[curTab]) return;
+  const d = data[curTab];
+  for (let i = 0; i < MAX; i++) {
+    d.usernames[i] = $(`u${i}`).value.trim();
+    d.robux[i]     = $(`a${i}`).value.trim();
+  }
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function updateStats() {
+  saveTab();
+  let entries = 0, total = 0, day = 0;
+  for (const [label, d] of Object.entries(data)) {
+    for (let i = 0; i < MAX; i++) {
+      if (d.usernames[i] || d.robux[i]) entries++;
+      const v = parseInt(d.robux[i]);
+      if (!isNaN(v)) { total += v; if (label === curTab) day += v; }
+    }
+  }
+  $('sEntries').textContent = `Total entries: ${entries}`;
+  $('sTotal').textContent   = `Total Amount: ${total.toLocaleString()}`;
+  $('sDay').textContent     = `Day Total: ${day.toLocaleString()}`;
+}
+
+// ── Delete tab ────────────────────────────────────────────────────────────────
+function deleteCurrentTab() {
+  if (!curTab) return;
+  const label = curTab;
+  delete data[label];
+  csvRows = [];
+  document.querySelectorAll('.rec-btn').forEach(b => { if (b.dataset.label === label) b.remove(); });
+  curTab = null;
+  $('exportBtns').innerHTML = '';
+  $('issueSection').style.display = 'none';
+  $('issueList').innerHTML = '';
+  const keys = Object.keys(data);
+  if (keys.length) {
+    switchTab(keys[0]);
+  } else {
+    for (let i = 0; i < MAX; i++) { $(`u${i}`).value = ''; $(`a${i}`).value = ''; }
+    hideGrid();
+    setStatus('Click "+ Add Date" to begin.');
+  }
+  updateStats();
+}
+
+// ── Prepare File ──────────────────────────────────────────────────────────────
+async function prepareFile() {
+  if (processing) return;
+  saveTab();
+
+  const users = new Set();
+  for (const d of Object.values(data)) d.usernames.forEach(u => { if (u.trim()) users.add(u.trim()); });
+  if (!users.size) { setStatus('No usernames entered.', 'err'); return; }
+
+  processing = true;
+  $('btnPrep').disabled = true;
+  $('btnPrep').textContent = 'Checking…';
+  $('exportBtns').innerHTML = '';
+
+  const userMap = {};
+  const issues  = [];
+  let done = 0;
+
+  for (const username of users) {
+    setStatus(`Checking ${++done} / ${users.size}: ${username}`);
+    try {
+      const idRes = await callProxy('userid', { username });
+      if (idRes.error === 'not_found') {
+        issues.push({ type: 'err', username, msg: 'Not found on Roblox' });
+        await sleep(400); continue;
+      }
+      if (idRes.error === 'RATE_LIMITED') {
+        issues.push({ type: 'err', username, msg: 'Rate limited — retry in ~60s' });
+        await sleep(1000); continue;
+      }
+      if (idRes.error) {
+        issues.push({ type: 'err', username, msg: idRes.error });
+        await sleep(400); continue;
+      }
+
+      await sleep(600);
+
+      const memRes = await callProxy('membership', null, `user_id=${idRes.id}`);
+      if (memRes.error === 'not_joined') {
+        issues.push({ type: 'err', username, msg: 'Not joined' });
+        await sleep(400); continue;
+      }
+      if (memRes.error === 'RATE_LIMITED') {
+        issues.push({ type: 'err', username, msg: 'Rate limited — retry in ~60s' });
+        await sleep(1000); continue;
+      }
+      if (memRes.error) {
+        issues.push({ type: 'err', username, msg: memRes.error });
+        await sleep(400); continue;
+      }
+
+      userMap[username.toLowerCase()] = {
+        id: idRes.id,
+        isEligible:   memRes.isEligible,
+        eligibleDate: memRes.eligibleDate,
+      };
+      if (!memRes.isEligible) {
+        issues.push({ type: 'warn', username, msg: `Eligible on ${memRes.eligibleDate}` });
+      }
+    } catch {
+      issues.push({ type: 'err', username, msg: 'Request failed' });
+    }
+    await sleep(400);
+  }
+
+  // Build ordered CSV rows (exclude error users, include ineligible)
+  csvRows = [];
+  for (const [label, d] of Object.entries(data)) {
+    for (let i = 0; i < MAX; i++) {
+      const u = d.usernames[i]?.trim();
+      if (!u) continue;
+      const entry = userMap[u.toLowerCase()];
+      if (entry) {
+        csvRows.push({ date: label, username: u, id: entry.id, robux: d.robux[i] || '' });
+      }
+    }
+  }
+
+  renderIssues(issues);
+  setStatus(`Ready: ${csvRows.length} entries.`, 'ok');
+  renderExportButtons(csvRows.length);
+
+  processing = false;
+  $('btnPrep').disabled = false;
+  $('btnPrep').textContent = 'Prepare File';
+}
+
+// ── Export buttons (dynamic: one per 20-entry file) ───────────────────────────
+function renderExportButtons(total) {
+  const container = $('exportBtns');
+  container.innerHTML = '';
+  if (total === 0) return;
+  const numFiles = Math.ceil(total / 20);
+  for (let i = 1; i <= numFiles; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-ghost';
+    btn.textContent = numFiles === 1 ? 'Download CSV' : `Download CSV File ${i}`;
+    btn.onclick = () => exportFile(i);
+    container.appendChild(btn);
+  }
+}
+
+// ── API proxy ─────────────────────────────────────────────────────────────────
+async function callProxy(action, body, qs) {
+  const url  = `/api/proxy?action=${action}${qs ? '&' + qs : ''}`;
+  const opts = body !== null
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    : { method: 'GET' };
+  const r = await fetch(url, opts);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Issues sidebar ────────────────────────────────────────────────────────────
+function renderIssues(issues) {
+  const list = $('issueList');
+  list.innerHTML = '';
+  if (!issues.length) { $('issueSection').style.display = 'none'; return; }
+  $('issueSection').style.display = 'flex';
+  $('issueSection').style.flexDirection = 'column';
+  issues.forEach(({ type, username, msg }) => {
+    const div = document.createElement('div');
+    div.className = 'issue-row' + (type === 'warn' ? ' warn' : '');
+    div.textContent = (type === 'err' ? '❌ ' : '⏳ ') + username + ': ' + msg;
+    list.appendChild(div);
+  });
+}
+
+// ── Status ────────────────────────────────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = $('footSt');
+  el.textContent = msg;
+  el.className = 'footer-status' + (cls ? ' ' + cls : '');
+}
+
+// ── CSV export ────────────────────────────────────────────────────────────────
+function exportFile(n) {
+  const flat  = csvRows.length ? csvRows : buildRaw();
+  const start = (n - 1) * 20;
+  const rows  = flat.slice(start, start + 20);
+  if (!rows.length) { alert('No entries in this file.'); return; }
+
+  const header = ['Date', 'Username', 'userId', 'payoutInRobux'];
+  const lines  = [header.join(',')];
+  rows.forEach(r =>
+    lines.push([r.date, r.username, r.id, r.robux]
+      .map(v => `"${String(v ?? '').replace(/"/g, '""')}"`)
+      .join(','))
+  );
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = Math.ceil(flat.length / 20) === 1 ? 'payout.csv' : `payout_file${n}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function buildRaw() {
+  const flat = [];
+  for (const [label, d] of Object.entries(data))
+    for (let i = 0; i < MAX; i++)
+      if (d.usernames[i] || d.robux[i])
+        flat.push({ date: label, username: d.usernames[i], id: '', robux: d.robux[i] });
+  return flat;
+}
+
+// ── CSV import ────────────────────────────────────────────────────────────────
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(e.target.result, file.name.replace(/\.csv$/i, ''));
+    if (!rows.length) return;
+
+    const groups = {};
+    rows.forEach(r => { (groups[r.date] = groups[r.date] || []).push(r); });
+
+    for (const [dateLabel, items] of Object.entries(groups)) {
+      let part = 1, idx = 0;
+      while (idx < items.length) {
+        let label = part === 1 ? dateLabel : `${dateLabel} (part ${part})`;
+        let suf = 1;
+        while (data[label]) label = (part === 1 ? dateLabel : `${dateLabel} (part ${part})`) + ` #${suf++}`;
+
+        const usernames = Array(MAX).fill('');
+        const robux     = Array(MAX).fill('');
+        for (let j = 0; j < MAX && idx < items.length; j++, idx++) {
+          usernames[j] = items[idx].username || '';
+          robux[j]     = items[idx].robux    || '';
+        }
+        data[label] = { usernames, robux };
+
+        const btn = document.createElement('button');
+        btn.className = 'rec-btn';
+        btn.textContent = label;
+        btn.dataset.label = label;
+        btn.onclick = () => switchTab(label);
+        $('recList').appendChild(btn);
+        part++;
+      }
+    }
+
+    showGrid();
+    switchTab(Object.keys(data).at(-1));
+    updateStats();
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function parseCSV(text, fallbackDate) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return [];
+
+  const parseRow = line => {
+    const out = []; let cur = '', q = false;
+    for (let i = 0; i < line.length; i++) {
+      if (q) {
+        if (line[i] === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+        else if (line[i] === '"') q = false;
+        else cur += line[i];
+      } else {
+        if (line[i] === '"') q = true;
+        else if (line[i] === ',') { out.push(cur); cur = ''; }
+        else cur += line[i];
+      }
+    }
+    out.push(cur);
+    return out;
+  };
+
+  const hdr = parseRow(lines[0]).map(h => h.trim().toLowerCase());
+  return lines.slice(1).map(line => {
+    const vals = parseRow(line);
+    const obj  = {};
+    hdr.forEach((h, i) => { obj[h] = (vals[i] || '').trim(); });
+    return {
+      date:     obj.date     || fallbackDate,
+      username: obj.username || obj.user || obj.name || '',
+      id:       obj.userid   || obj.id   || '',
+      robux:    obj.payoutinrobux || obj.amount || obj.robux || '',
+    };
+  }).filter(r => r.username || r.robux);
+}
+
+// ── Eligibility checker ───────────────────────────────────────────────────────
+let eligBusy = false;
+
+async function checkElig() {
+  if (eligBusy) return;
+  const username = $('eligInp').value.trim();
+  if (!username) return;
+  eligBusy = true;
+  $('eligDates').textContent  = '';
+  $('eligStatus').textContent = 'Checking…';
+  $('eligStatus').className   = 'elig-status busy';
+  try {
+    const idRes = await callProxy('userid', { username });
+    if (idRes.error) {
+      $('eligStatus').textContent = idRes.error === 'not_found' ? 'NOT FOUND' : idRes.error.toUpperCase();
+      $('eligStatus').className   = 'elig-status bad';
+      return;
+    }
+    await sleep(600);
+    const memRes = await callProxy('membership', null, `user_id=${idRes.id}`);
+    if (memRes.error) {
+      $('eligStatus').textContent = memRes.error === 'not_joined' ? 'NOT JOINED' : memRes.error.toUpperCase();
+      $('eligStatus').className   = 'elig-status bad';
+      return;
+    }
+    $('eligDates').innerHTML    = `Joined: ${memRes.joinDate}<br>Eligible: ${memRes.eligibleDate}`;
+    $('eligStatus').textContent = memRes.isEligible ? 'ELIGIBLE' : 'INELIGIBLE';
+    $('eligStatus').className   = 'elig-status ' + (memRes.isEligible ? 'ok' : 'bad');
+  } catch {
+    $('eligStatus').textContent = 'REQUEST FAILED';
+    $('eligStatus').className   = 'elig-status bad';
+  } finally {
+    eligBusy = false;
+  }
+}
+</script>
+
+</body>
+</html>
