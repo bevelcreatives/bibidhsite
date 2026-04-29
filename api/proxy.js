@@ -31,6 +31,7 @@ module.exports = async function handler(req, res) {
 
   // ── Get group membership & eligibility ────────────────────────────────────
   } else if (action === 'membership') {
+    if (!API_KEY) return res.status(200).json({ error: 'API_KEY_MISSING' });
     if (!user_id || !/^\d+$/.test(user_id))
       return res.status(200).json({ error: 'Invalid user_id' });
 
@@ -48,6 +49,10 @@ module.exports = async function handler(req, res) {
     }
 
     if (r.status === 429) return res.status(200).json({ error: 'RATE_LIMITED' });
+    if (!r.ok) {
+      const errBody = await r.json().catch(() => ({}));
+      return res.status(200).json({ error: `API_ERROR_${r.status}`, detail: errBody });
+    }
     const data = await r.json();
     if (!data.groupMemberships?.length) return res.status(200).json({ error: 'not_joined' });
 
